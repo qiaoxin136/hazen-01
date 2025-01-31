@@ -77,7 +77,7 @@ function App() {
     const today = new Date();
     //console.log(today.getFullYear());
     //console.log((new Date(yearcompl)).getFullYear());
-    if (today.getFullYear() - new Date(yearcompl).getFullYear() < -5.001) {
+    if (today.getFullYear() - new Date(yearcompl).getFullYear() < -6.01) {
       setRecent(true);
     } else {
       setRecent(false);
@@ -101,6 +101,7 @@ function App() {
   function deleteTodo(id: string) {
     client.models.Todo.delete({ id });
   }
+
 
   const handleName = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
