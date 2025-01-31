@@ -96,6 +96,10 @@ function App() {
       lng: lng,
       recent: recent,
     });
+    setName("");
+    setCustomer("");
+    setLocation("");
+    setYearcoml("");
   }
 
   function deleteTodo(id: string) {
@@ -149,7 +153,7 @@ function App() {
         <Button onClick={signOut} width={120}>
           Sign out
         </Button>
-        <Button onClick={createTodo}>+ new</Button>
+        <Button onClick={createTodo} backgroundColor={"azure"}color={"red"}>+ new</Button>
         <Button
           role="link"
           onClick={() => openInNewTab("https://plainenglish.io")}
