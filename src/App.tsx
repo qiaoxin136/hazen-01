@@ -6,16 +6,6 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import {
   Flex,
   Button,
-  Table,
-  TableBody,
-  TableHead,
-  TableCell,
-  TableRow,
-  ScrollView,
-  SelectField,
-  Input,
-  ThemeProvider,
-  Theme,
 } from "@aws-amplify/ui-react";
 
 const client = generateClient<Schema>();
