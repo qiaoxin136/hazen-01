@@ -1,0 +1,26 @@
+/* styles.css */
+.amplify-table__th {
+    background-color: var(--amplify-colors-background-tertiary);
+  }
+  
+  .amplify-table__th:first-child {
+    text-align: center;
+  }
+  
+  .amplify-table__row:not(:first-child) .amplify-table__th {
+    border-top: none;
+  }
+  
+  .amplify-table__row:not(:last-child) .amplify-table__th {
+    border-bottom: none;
+  }
+  
+  .amplify-table__caption {
+    caption-side: top;
+    text-align: center;
+  }
+  
+  .table-summary {
+    color: var(--amplify-colors-font-secondary);
+    font-style: italic;
+  }

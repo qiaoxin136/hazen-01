@@ -2,6 +2,7 @@ import { useEffect, useState, ChangeEvent } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import "./styles.css";
 
 import {
   Flex,
@@ -12,8 +13,8 @@ import {
   TableHead,
   TableCell,
   TableRow,
-  Input, 
-  SelectField, 
+  Input,
+  SelectField,
   ThemeProvider,
   Theme,
 } from "@aws-amplify/ui-react";
@@ -31,13 +32,14 @@ const theme: Theme = {
           },
 
           striped: {
-            backgroundColor: { value: "{colors.blue.10}" },
+            backgroundColor: { value: "{colors.orange.10}" },
           },
         },
 
         header: {
           color: { value: "{colors.blue.80}" },
           fontSize: { value: "{fontSizes.x3}" },
+          borderColor: { value: "{colors.blue.20}" },
         },
 
         data: {
@@ -60,7 +62,7 @@ function App() {
   const [mile, setMile] = useState(0);
   const [ps, setPs] = useState(0);
   const [software, setSoftware] = useState("");
-  //const [recent, setRecent] = useState(true);
+  const [recent, setRecent] = useState(true);
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -69,7 +71,16 @@ function App() {
   }, []);
 
   function createTodo() {
- 
+    const today = new Date();
+    //console.log(today.getFullYear());
+    //console.log((new Date(yearcompl)).getFullYear());
+    if (today.getFullYear() - new Date(yearcompl).getFullYear() < -5.001) {
+      setRecent(true);
+    } else {
+      setRecent(false);
+    }
+    console.log(recent);
+
     client.models.Todo.create({
       name: name,
       customer: customer,
@@ -80,7 +91,7 @@ function App() {
       ps: ps,
       lat: lat,
       lng: lng,
-      recent: true, 
+      recent: recent,
     });
   }
 
@@ -121,40 +132,38 @@ function App() {
 
   return (
     <main>
-      <h3>Hydraulic Modeling Group Software Tracking</h3>
-
       <ScrollView>
-      <ThemeProvider theme={theme} colorMode="light">
-        <Table caption="" highlightOnHover={true} variation="bordered">
-          <TableHead>
-            <TableRow>
-              <TableCell as="th">Project</TableCell>
-              <TableCell as="th">Customer</TableCell>
-              <TableCell as="th">Location</TableCell>
-              <TableCell as="th">Completion</TableCell>
-              <TableCell as="th">Software</TableCell>
-              <TableCell as="th">Miles</TableCell>
-              <TableCell as="th">PS</TableCell>
-              <TableCell as="th">Latitude</TableCell>
-              <TableCell as="th">Longitude</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {todos.map((todo) => (
-              <TableRow onClick={() => deleteTodo(todo.id)} key={todo.id}>
-                <TableCell>{todo.name}</TableCell>
-                <TableCell>{todo.customer}</TableCell>
-                <TableCell>{todo.location}</TableCell>
-                <TableCell>{todo.yearcompl}</TableCell>
-                <TableCell>{todo.software}</TableCell>
-                <TableCell>{todo.mile}</TableCell>
-                <TableCell>{todo.ps}</TableCell>
-                <TableCell>{todo.lat}</TableCell>
-                <TableCell>{todo.lng}</TableCell>
+        <ThemeProvider theme={theme} colorMode="light">
+          <Table caption="" highlightOnHover={true} variation="striped">
+            <TableHead>
+              <TableRow>
+                <TableCell as="th">Project</TableCell>
+                <TableCell as="th">Customer</TableCell>
+                <TableCell as="th">Location</TableCell>
+                <TableCell as="th">Completion</TableCell>
+                <TableCell as="th">Software</TableCell>
+                <TableCell as="th">Miles</TableCell>
+                <TableCell as="th">PS</TableCell>
+                <TableCell as="th">Latitude</TableCell>
+                <TableCell as="th">Longitude</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {todos.map((todo) => (
+                <TableRow onClick={() => deleteTodo(todo.id)} key={todo.id}>
+                  <TableCell>{todo.name}</TableCell>
+                  <TableCell>{todo.customer}</TableCell>
+                  <TableCell>{todo.location}</TableCell>
+                  <TableCell>{todo.yearcompl}</TableCell>
+                  <TableCell>{todo.software}</TableCell>
+                  <TableCell>{todo.mile}</TableCell>
+                  <TableCell>{todo.ps}</TableCell>
+                  <TableCell>{todo.lat}</TableCell>
+                  <TableCell>{todo.lng}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </ThemeProvider>
         <Flex direction={"row"}>
           <Input
