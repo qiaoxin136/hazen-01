@@ -6,7 +6,7 @@ import "./styles.css";
 
 import {
   ScrollView,
-  Link,
+  View,
   Flex,
   Heading,
   Button,
@@ -133,46 +133,31 @@ function App() {
     setPs(Math.floor(parseFloat(e.target.value)));
   };
 
+  const openInNewTab = (url: any) => {
+    window.open(url, "_blank", "noreferrer");
+  };
+
   return (
     <main>
-      <Heading width="15vw" level={3}>
+      
+      
+      <Flex>
+      <Heading width="50vw" level={5}>
         Hydraulic Modeling Group Sewer Software
       </Heading>
+        <Button onClick={signOut} width={120}>
+          Sign out
+        </Button>
+        <Button onClick={createTodo}>+ new</Button>
+        <Button
+          role="link"
+          onClick={() => openInNewTab("https://plainenglish.io")}
+        >
+          Map
+        </Button>
+      </Flex>
       <Divider orientation="horizontal" />
-      <ScrollView width="100%" height="57%">
-        <ThemeProvider theme={theme} colorMode="light">
-          <Table caption="" highlightOnHover={true} variation="striped">
-            <TableHead>
-              <TableRow>
-                <TableCell as="th">Project</TableCell>
-                <TableCell as="th">Customer</TableCell>
-                <TableCell as="th">Location</TableCell>
-                <TableCell as="th">Completion</TableCell>
-                <TableCell as="th">Software</TableCell>
-                <TableCell as="th">Miles</TableCell>
-                <TableCell as="th">PS</TableCell>
-                <TableCell as="th">Latitude</TableCell>
-                <TableCell as="th">Longitude</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {todos.map((todo) => (
-                <TableRow onClick={() => deleteTodo(todo.id)} key={todo.id}>
-                  <TableCell>{todo.name}</TableCell>
-                  <TableCell>{todo.customer}</TableCell>
-                  <TableCell>{todo.location}</TableCell>
-                  <TableCell>{todo.yearcompl}</TableCell>
-                  <TableCell>{todo.software}</TableCell>
-                  <TableCell>{todo.mile}</TableCell>
-                  <TableCell>{todo.ps}</TableCell>
-                  <TableCell>{todo.lat}</TableCell>
-                  <TableCell>{todo.lng}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </ThemeProvider>
-      </ScrollView>
+      < br/>
       <Flex direction={"row"}>
         <Input
           type="text"
@@ -241,19 +226,57 @@ function App() {
         <Input type="number" value={lat} onChange={handleLat} />
         <Input type="number" value={lng} onChange={handleLng} />
       </Flex>
+      <View
+        as="div"
+        ariaLabel="View example"
+        backgroundColor="var(--amplify-colors-white)"
+        borderRadius="6px"
+        border="1px solid var(--amplify-colors-black)"
+        // boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
+        color="var(--amplify-colors-blue-60)"
+        height="40rem"
+        // maxWidth="100%"
+        padding="1rem"
+        width="100%"
+      >
+        <ScrollView>
+        <ThemeProvider theme={theme} colorMode="light">
+          <Table caption="" highlightOnHover={true} variation="striped">
+            <TableHead>
+              <TableRow>
+                <TableCell as="th">Project</TableCell>
+                <TableCell as="th">Customer</TableCell>
+                <TableCell as="th">Location</TableCell>
+                <TableCell as="th">Completion</TableCell>
+                <TableCell as="th">Software</TableCell>
+                <TableCell as="th">Miles</TableCell>
+                <TableCell as="th">PS</TableCell>
+                <TableCell as="th">Latitude</TableCell>
+                <TableCell as="th">Longitude</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {todos.map((todo) => (
+                <TableRow onClick={() => deleteTodo(todo.id)} key={todo.id}>
+                  <TableCell>{todo.name}</TableCell>
+                  <TableCell>{todo.customer}</TableCell>
+                  <TableCell>{todo.location}</TableCell>
+                  <TableCell>{todo.yearcompl}</TableCell>
+                  <TableCell>{todo.software}</TableCell>
+                  <TableCell>{todo.mile}</TableCell>
+                  <TableCell>{todo.ps}</TableCell>
+                  <TableCell>{todo.lat}</TableCell>
+                  <TableCell>{todo.lng}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </ThemeProvider>
+        </ScrollView>
+      </View>
+    
 
-      <Flex>
-        <Button onClick={signOut} width={120}>
-          Sign out
-        </Button>
-        <Button onClick={createTodo}>+ new</Button>
-        <Link
-          href="https://ui.docs.amplify.aws/react/components/link"
-          color="#007EB9"
-        >
-          My Demo Link
-        </Link>
-      </Flex>
+
     </main>
   );
 }
