@@ -234,7 +234,7 @@ function App() {
         border="1px solid var(--amplify-colors-black)"
         // boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
         color="var(--amplify-colors-blue-60)"
-        height="40rem"
+        height="45rem"
         // maxWidth="100%"
         padding="1rem"
         width="100%"
