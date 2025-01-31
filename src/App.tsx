@@ -5,9 +5,12 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import "./styles.css";
 
 import {
-  Flex,
-  Button,
   ScrollView,
+  Link,
+  Flex,
+  Heading,
+  Button,
+  Divider,
   Table,
   TableBody,
   TableHead,
@@ -132,7 +135,11 @@ function App() {
 
   return (
     <main>
-      <ScrollView>
+      <Heading width="15vw" level={3}>
+        Hydraulic Modeling Group Sewer Software
+      </Heading>
+      <Divider orientation="horizontal" />
+      <ScrollView width="100%" height="57%">
         <ThemeProvider theme={theme} colorMode="light">
           <Table caption="" highlightOnHover={true} variation="striped">
             <TableHead>
@@ -165,80 +172,87 @@ function App() {
             </TableBody>
           </Table>
         </ThemeProvider>
-        <Flex direction={"row"}>
-          <Input
-            type="text"
-            value={name}
-            placeholder="Project"
-            onChange={handleName}
-            size="small"
-          />
-          <Input
-            type="text"
-            value={customer}
-            placeholder="Customer"
-            onChange={handleCustomer}
-            size="small"
-          />
-          <Input
-            type="text"
-            value={location}
-            placeholder="Location"
-            onChange={handleLocation}
-            size="small"
-          />
-          <Input
-            type="date"
-            value={yearcompl}
-            placeholder="Completion"
-            onChange={handleYearcompl}
-            size="small"
-          />
-          <SelectField
-            label=""
-            placeholder=""
-            value={software}
-            onChange={(e) => setSoftware(e.target.value)}
-            width="150%"
-          >
-            <option value="infoworksicm">InfoWorks ICM</option>
-            <option value="infoworkscs">InfoWorks CS</option>
-            <option value="pcswmm">PCSWMM</option>
-            <option value="mike">MIKE(Urban)</option>
-            <option value="infoswmm">InfoSWMM</option>
-            <option value="infosewer">InfoSewer</option>
-            <option value="xpswmm">XPSWMM</option>
-            <option value="sewergems">SewerGEMS</option>
-            <option value="watergems">WaterGEMS</option>
-            <option value="h2osewer">H2OMap Sewer</option>
-            <option value="infowater">InfoWater</option>
-            <option value="aquatwin">AquaTwin</option>
-          </SelectField>
-          <Input
-            type="number"
-            value={mile}
-            placeholder="Mile"
-            onChange={handleMile}
-            size="small"
-            width="50%"
-          />
-          <Input
-            type="number"
-            value={ps}
-            placeholder="PS"
-            onChange={handlePs}
-            size="small"
-            width="50%"
-          />
-          <Input type="number" value={lat} onChange={handleLat} />
-          <Input type="number" value={lng} onChange={handleLng} />
-        </Flex>
       </ScrollView>
+      <Flex direction={"row"}>
+        <Input
+          type="text"
+          value={name}
+          placeholder="Project"
+          onChange={handleName}
+          size="small"
+        />
+        <Input
+          type="text"
+          value={customer}
+          placeholder="Customer"
+          onChange={handleCustomer}
+          size="small"
+        />
+        <Input
+          type="text"
+          value={location}
+          placeholder="Location"
+          onChange={handleLocation}
+          size="small"
+        />
+        <Input
+          type="date"
+          value={yearcompl}
+          placeholder="Completion"
+          onChange={handleYearcompl}
+          size="small"
+        />
+        <SelectField
+          label=""
+          placeholder=""
+          value={software}
+          onChange={(e) => setSoftware(e.target.value)}
+          width="150%"
+        >
+          <option value="infoworksicm">InfoWorks ICM</option>
+          <option value="infoworkscs">InfoWorks CS</option>
+          <option value="pcswmm">PCSWMM</option>
+          <option value="mike">MIKE(Urban)</option>
+          <option value="infoswmm">InfoSWMM</option>
+          <option value="infosewer">InfoSewer</option>
+          <option value="xpswmm">XPSWMM</option>
+          <option value="sewergems">SewerGEMS</option>
+          <option value="watergems">WaterGEMS</option>
+          <option value="h2osewer">H2OMap Sewer</option>
+          <option value="infowater">InfoWater</option>
+          <option value="aquatwin">AquaTwin</option>
+        </SelectField>
+        <Input
+          type="number"
+          value={mile}
+          placeholder="Mile"
+          onChange={handleMile}
+          size="small"
+          width="50%"
+        />
+        <Input
+          type="number"
+          value={ps}
+          placeholder="PS"
+          onChange={handlePs}
+          size="small"
+          width="50%"
+        />
+        <Input type="number" value={lat} onChange={handleLat} />
+        <Input type="number" value={lng} onChange={handleLng} />
+      </Flex>
+
       <Flex>
         <Button onClick={signOut} width={120}>
           Sign out
         </Button>
         <Button onClick={createTodo}>+ new</Button>
+        <Link
+          href="https://ui.docs.amplify.aws/react/components/link"
+          color="#007EB9"
+        >
+          My Demo Link
+        </Link>
       </Flex>
     </main>
   );
