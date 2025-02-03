@@ -236,7 +236,7 @@ function App() {
         ariaLabel="View example"
         backgroundColor="var(--amplify-colors-white)"
         borderRadius="6px"
-        border="1px solid var(--amplify-colors-black)"
+        //border="1px solid var(--amplify-colors-black)"
         // boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
         color="var(--amplify-colors-blue-60)"
         height="45rem"
