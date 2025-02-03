@@ -21,8 +21,14 @@ const schema = a.schema({
       software: a.string(),
       recent: a.boolean()
     })
+    .secondaryIndexes((index) => [
+      index("name")
+      .sortKeys(["yearcompl"]),
+    ])
     .authorization((allow) => [allow.publicApiKey()]),
 });
+
+
 
 export type Schema = ClientSchema<typeof schema>;
 
