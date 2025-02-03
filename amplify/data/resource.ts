@@ -15,7 +15,7 @@ const schema = a.schema({
       lat: a.float(),
       lng: a.float(),   
       location: a.string(),
-      yearcompl: a.date(),
+      yearcompl: a.date().required(),
       mile: a.float(),
       ps: a.integer(),
       software: a.string(),
