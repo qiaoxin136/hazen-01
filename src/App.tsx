@@ -4,6 +4,8 @@ import { generateClient } from "aws-amplify/data";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import "./styles.css";
 
+
+
 import {
   ScrollView,
   View,
@@ -72,6 +74,7 @@ function App() {
       next: (data) => setTodos([...data.items]),
     });
   }, []);
+
 
   function createTodo() {
     const today = new Date();
@@ -143,9 +146,7 @@ function App() {
   };
 
   return (
-    <main>
-      
-      
+    <main>      
       <Flex>
       <Heading width="50vw" level={5}>
         Hydraulic Modeling Group Sewer Software
@@ -156,7 +157,7 @@ function App() {
         <Button onClick={createTodo} backgroundColor={"azure"}color={"red"}>+ new</Button>
         <Button
           role="link"
-          onClick={() => openInNewTab("https://plainenglish.io")}
+          onClick={() => openInNewTab("https://showhazenproject.d3gxxduu8baji9.amplifyapp.com/")}
         >
           Map
         </Button>
@@ -262,7 +263,7 @@ function App() {
             </TableHead>
             <TableBody>
               {todos.map((todo) => (
-                <TableRow onClick={() => deleteTodo(todo.id)} key={todo.id}>
+                <TableRow onClick={() => deleteTodo(todo.id)} key={todo.yearcompl}>
                   <TableCell>{todo.name}</TableCell>
                   <TableCell>{todo.customer}</TableCell>
                   <TableCell>{todo.location}</TableCell>
