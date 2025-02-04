@@ -77,15 +77,11 @@ function App() {
 
 
   function createTodo() {
-    const today = new Date();
-    //console.log(today.getFullYear());
-    //console.log((new Date(yearcompl)).getFullYear());
-    if (today.getFullYear() - new Date(yearcompl).getFullYear() < -6.01) {
+    //const today = new Date();
+ 
       setRecent(true);
-    } else {
-      setRecent(false);
-    }
-    console.log(recent);
+
+    //console.log(recent);
 
     client.models.Todo.create({
       name: name,
