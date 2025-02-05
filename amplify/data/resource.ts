@@ -18,7 +18,7 @@ const schema = a.schema({
       yearcompl: a.date().required(),
       mile: a.float(),
       ps: a.integer(),
-      software: a.string(),
+      software: a.string().required(),
       recent: a.boolean()
     })
 
