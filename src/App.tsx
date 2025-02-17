@@ -84,7 +84,7 @@ const INITIAL_VIEW_STATE: any = {
   longitude: -80.20321,
   //latitude: 35.68111419325676,
   latitude: 26.00068,
-  zoom: 17,
+  zoom: 4,
   bearing: 0,
   pitch: 0,
 };
