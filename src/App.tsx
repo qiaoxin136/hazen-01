@@ -31,9 +31,7 @@ import {
 
 import {
   Marker,
-  NavigationControl,
-  GeolocateControl,
-  ScaleControl,
+
 } from "react-map-gl";
 
 import axios, { AxiosResponse } from "axios";
@@ -417,8 +415,8 @@ function App() {
                       setViewport(viewState)
                     }
                     style={{
-                      height: "100%",
-                      width: "100%",
+                      // height: "100%",
+                      // width: "100%",
                       top: "15%",
                     }}
                   >
@@ -428,14 +426,12 @@ function App() {
                       style={{
                         //position: "absolute",
                         zIndex: -1,
-                        height: "100%",
-                        width: "100%",
+                        // height: "100%",
+                        // width: "100%",
                       }}
                     >
-                      <Marker latitude={lat} longitude={lng} />
-                      <NavigationControl />
-                      <GeolocateControl />
-                      <ScaleControl />
+                       
+                      <Marker latitude={lat} longitude={lng}></Marker>
                     </MapView>
                   </DeckGL>
                 </ScrollView>
