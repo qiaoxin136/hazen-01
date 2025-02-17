@@ -1,14 +1,18 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent, useCallback } from "react";
 import type { Schema } from "../amplify/data/resource";
+import { DeckGL } from "@deck.gl/react";
+import { PickingInfo } from "@deck.gl/core";
+//import { MVTLayer } from "@deck.gl/geo-layers";
+import { GeoJsonLayer } from "@deck.gl/layers";
+import { MapView } from "@aws-amplify/ui-react-geo";
 import { generateClient } from "aws-amplify/data";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import "./styles.css";
-
-
+import "@aws-amplify/ui-react/styles.css";
 
 import {
   ScrollView,
-  View,
+  //View,
   Flex,
   Heading,
   Button,
@@ -22,7 +26,27 @@ import {
   SelectField,
   ThemeProvider,
   Theme,
+  Tabs,
 } from "@aws-amplify/ui-react";
+
+import {
+  Marker,
+  NavigationControl,
+  GeolocateControl,
+  ScaleControl,
+} from "react-map-gl";
+
+import axios, { AxiosResponse } from "axios";
+import type { Feature, Geometry } from "geojson";
+
+type BlockProperties = {
+  person: string;
+  description: string;
+  date: string;
+  report: string;
+};
+
+export type DataType = Feature<Geometry, BlockProperties>;
 
 const client = generateClient<Schema>();
 
@@ -55,9 +79,20 @@ const theme: Theme = {
   },
 };
 
+const INITIAL_VIEW_STATE: any = {
+  //longitude: 139.7674681227469,
+  longitude: -80.20321,
+  //latitude: 35.68111419325676,
+  latitude: 26.00068,
+  zoom: 17,
+  bearing: 0,
+  pitch: 0,
+};
+
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const { signOut } = useAuthenticator();
+  const [viewport, setViewport] = useState(INITIAL_VIEW_STATE);
   const [name, setName] = useState("");
   const [customer, setCustomer] = useState("");
   const [lat, setLat] = useState(39.5);
@@ -68,6 +103,37 @@ function App() {
   const [ps, setPs] = useState(0);
   const [software, setSoftware] = useState("");
   const [recent, setRecent] = useState(true);
+  const [data, setData] = useState<DataType>();
+  const [tab, setTab] = useState("1");
+  const layers: any = [];
+
+  const getPlacesData = async () => {
+    try {
+      const url =
+        "https://b7yekehed7.execute-api.us-east-1.amazonaws.com/test/getData";
+      const response: AxiosResponse = await axios.get(url);
+      //console.log(response.data);
+
+      return response.data;
+
+      return null;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  function handleData() {
+    getPlacesData().then((array) => {
+      setData(array);
+      console.log(data);
+    });
+
+    //console.log(data);
+  }
+
+  useEffect(() => {
+    handleData();
+  }, []);
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -75,11 +141,10 @@ function App() {
     });
   }, []);
 
-
   function createTodo() {
     //const today = new Date();
- 
-      setRecent(true);
+
+    setRecent(true);
 
     //console.log(recent);
 
@@ -104,7 +169,6 @@ function App() {
   function deleteTodo(id: string) {
     client.models.Todo.delete({ id });
   }
-
 
   const handleName = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -140,26 +204,67 @@ function App() {
   const openInNewTab = (url: any) => {
     window.open(url, "_blank", "noreferrer");
   };
+  const onClick = useCallback((info: PickingInfo) => {
+    setLng(Object.values(info)[8][0]);
+    setLat(Object.values(info)[8][1]);
+  }, []);
+
+  let layer25 = new GeoJsonLayer({
+    id: "datasource",
+    data: data,
+    filled: true,
+    //pointType: "circle+text",
+    pickable: true,
+    pointType: "icon",
+    iconAtlas:
+      "https://mylibraryforuse.s3.amazonaws.com/logo/icons8-marker-100.png",
+    iconMapping: {
+      marker: {
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+        anchorY: 50,
+        anchorX: 50,
+        mask: false,
+      },
+    },
+    getIcon: () => "marker",
+    getIconSize: 5,
+    getIconColor: [112, 128, 144, 200],
+    getIconAngle: 0,
+    iconSizeUnits: "meters",
+    iconSizeScale: 5,
+    iconSizeMinPixels: 6,
+  });
+
+  layers.push(layer25);
 
   return (
-    <main>      
+    <main>
       <Flex>
-      <Heading width="50vw" level={5}>
-        Hydraulic Modeling Group Sewer Software
-      </Heading>
+        <Heading width="50vw" level={5}>
+          Hydraulic Modeling Group Sewer Software
+        </Heading>
         <Button onClick={signOut} width={120}>
           Sign out
         </Button>
-        <Button onClick={createTodo} backgroundColor={"azure"}color={"red"}>+ new</Button>
+        <Button onClick={createTodo} backgroundColor={"azure"} color={"red"}>
+          + new
+        </Button>
         <Button
           role="link"
-          onClick={() => openInNewTab("https://showhazenproject.d3gxxduu8baji9.amplifyapp.com/")}
+          onClick={() =>
+            openInNewTab(
+              "https://showhazenproject.d3gxxduu8baji9.amplifyapp.com/"
+            )
+          }
         >
           Map
         </Button>
       </Flex>
       <Divider orientation="horizontal" />
-      < br/>
+      <br />
       <Flex direction={"row"}>
         <Input
           type="text"
@@ -228,7 +333,118 @@ function App() {
         <Input type="number" value={lat} onChange={handleLat} />
         <Input type="number" value={lng} onChange={handleLng} />
       </Flex>
-      <View
+      <Tabs
+        value={tab}
+        onValueChange={(tab) => setTab(tab)}
+        items={[
+          {
+            label: "Complaint Data",
+            value: "1",
+            content: (
+              <>
+                <ScrollView
+                  as="div"
+                  ariaLabel="View example"
+                  backgroundColor="var(--amplify-colors-white)"
+                  borderRadius="6px"
+                  //border="1px solid var(--amplify-colors-black)"
+                  // boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
+                  color="var(--amplify-colors-blue-60)"
+                  // height="45rem"
+                  // maxWidth="100%"
+                  padding="1rem"
+                  // width="100%"
+                  width="2400px"
+                  height={"2400px"}
+                  maxHeight={"2400px"}
+                  maxWidth="2400px"
+                >
+                  <ThemeProvider theme={theme} colorMode="light">
+                    <Table
+                      caption=""
+                      highlightOnHover={true}
+                      variation="striped"
+                    >
+                      <TableHead>
+                        <TableRow>
+                          <TableCell as="th">Project</TableCell>
+                          <TableCell as="th">Customer</TableCell>
+                          <TableCell as="th">Location</TableCell>
+                          <TableCell as="th">Completion</TableCell>
+                          <TableCell as="th">Software</TableCell>
+                          <TableCell as="th">Miles</TableCell>
+                          <TableCell as="th">PS</TableCell>
+                          <TableCell as="th">Latitude</TableCell>
+                          <TableCell as="th">Longitude</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {todos.map((todo) => (
+                          <TableRow
+                            onClick={() => deleteTodo(todo.id)}
+                            key={todo.yearcompl}
+                          >
+                            <TableCell>{todo.name}</TableCell>
+                            <TableCell>{todo.customer}</TableCell>
+                            <TableCell>{todo.location}</TableCell>
+                            <TableCell>{todo.yearcompl}</TableCell>
+                            <TableCell>{todo.software}</TableCell>
+                            <TableCell>{todo.mile}</TableCell>
+                            <TableCell>{todo.ps}</TableCell>
+                            <TableCell>{todo.lat}</TableCell>
+                            <TableCell>{todo.lng}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </ThemeProvider>
+                </ScrollView>
+              </>
+            ),
+          },
+          {
+            label: "Complaint Map",
+            value: "2",
+            content: (
+              <>
+                <ScrollView>
+                  <DeckGL
+                    initialViewState={INITIAL_VIEW_STATE}
+                    controller
+                    layers={layers}
+                    onClick={onClick}
+                    onViewStateChange={({ viewState }) =>
+                      setViewport(viewState)
+                    }
+                    style={{
+                      height: "100%",
+                      width: "100%",
+                      top: "30%",
+                    }}
+                  >
+                    <MapView
+                      {...viewport}
+                      initialViewState={INITIAL_VIEW_STATE}
+                      style={{
+                        //position: "absolute",
+                        zIndex: -1,
+                        height: "100%",
+                        width: "100%",
+                      }}
+                    >
+                      <Marker latitude={lat} longitude={lng} />
+                      <NavigationControl />
+                      <GeolocateControl />
+                      <ScaleControl />
+                    </MapView>
+                  </DeckGL>
+                </ScrollView>
+              </>
+            ),
+          },
+        ]}
+      />
+      {/* <View
         as="div"
         ariaLabel="View example"
         backgroundColor="var(--amplify-colors-white)"
@@ -240,45 +456,7 @@ function App() {
         // maxWidth="100%"
         padding="1rem"
         width="100%"
-      >
-        <ScrollView>
-        <ThemeProvider theme={theme} colorMode="light">
-          <Table caption="" highlightOnHover={true} variation="striped">
-            <TableHead>
-              <TableRow>
-                <TableCell as="th">Project</TableCell>
-                <TableCell as="th">Customer</TableCell>
-                <TableCell as="th">Location</TableCell>
-                <TableCell as="th">Completion</TableCell>
-                <TableCell as="th">Software</TableCell>
-                <TableCell as="th">Miles</TableCell>
-                <TableCell as="th">PS</TableCell>
-                <TableCell as="th">Latitude</TableCell>
-                <TableCell as="th">Longitude</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {todos.map((todo) => (
-                <TableRow onClick={() => deleteTodo(todo.id)} key={todo.yearcompl}>
-                  <TableCell>{todo.name}</TableCell>
-                  <TableCell>{todo.customer}</TableCell>
-                  <TableCell>{todo.location}</TableCell>
-                  <TableCell>{todo.yearcompl}</TableCell>
-                  <TableCell>{todo.software}</TableCell>
-                  <TableCell>{todo.mile}</TableCell>
-                  <TableCell>{todo.ps}</TableCell>
-                  <TableCell>{todo.lat}</TableCell>
-                  <TableCell>{todo.lng}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </ThemeProvider>
-        </ScrollView>
-      </View>
-    
-
-
+      ></View> */}
     </main>
   );
 }
