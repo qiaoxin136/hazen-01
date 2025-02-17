@@ -81,10 +81,10 @@ const theme: Theme = {
 
 const INITIAL_VIEW_STATE: any = {
   //longitude: 139.7674681227469,
-  longitude: -80.20321,
+  longitude: -96.20321,
   //latitude: 35.68111419325676,
-  latitude: 26.00068,
-  zoom: 4,
+  latitude: 37.00068,
+  zoom: 4.5,
   bearing: 0,
   pitch: 0,
 };
@@ -338,7 +338,7 @@ function App() {
         onValueChange={(tab) => setTab(tab)}
         items={[
           {
-            label: "Complaint Data",
+            label: "Project Table",
             value: "1",
             content: (
               <>
@@ -403,7 +403,7 @@ function App() {
             ),
           },
           {
-            label: "Complaint Map",
+            label: "Project Map",
             value: "2",
             content: (
               <>
@@ -419,7 +419,7 @@ function App() {
                     style={{
                       height: "100%",
                       width: "100%",
-                      top: "30%",
+                      top: "15%",
                     }}
                   >
                     <MapView
