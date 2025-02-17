@@ -15,10 +15,10 @@ const schema = a.schema({
       lat: a.float(),
       lng: a.float(),   
       location: a.string(),
-      yearcompl: a.date().required(),
+      yearcompl: a.date(),
       mile: a.float(),
       ps: a.integer(),
-      software: a.string().required(),
+      software: a.string(),
       recent: a.boolean()
     })
 

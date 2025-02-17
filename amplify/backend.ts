@@ -15,7 +15,7 @@ const geoStack = backend.createStack("geo-stack");
 
 // create a location services map
 const map = new CfnMap(geoStack, "Map", {
-  mapName: "myMap1",
+  mapName: "myMap",
   description: "Map",
   configuration: {
     style: "VectorEsriNavigation",
@@ -24,7 +24,7 @@ const map = new CfnMap(geoStack, "Map", {
   tags: [
     {
       key: "name",
-      value: "myMap1",
+      value: "myMap",
     },
   ],
 });
