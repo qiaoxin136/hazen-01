@@ -12,9 +12,8 @@ import "@aws-amplify/ui-react/styles.css";
 
 import {
   ScrollView,
-  View,
+  //View,
   Flex,
-  Heading,
   Button,
   //Divider,
   Table,
@@ -256,9 +255,7 @@ function App() {
 
   return (
     <main>
-      <Heading width="50vw" level={5}>
-        Hydraulic Modeling Group Sewer Software
-      </Heading>
+      <h1>Hydraulic Modeling Group Software Tracking</h1>
       <br />
       <br />
       <br />
@@ -431,7 +428,7 @@ function App() {
               value: "2",
               content: (
                 <>
-                  <View
+                  <ScrollView
                   // width="100%"
                   //  width="100%"
                   //  height={"1600px"}
@@ -452,6 +449,7 @@ function App() {
                         top: "30%",
                       }}
                     >
+                      
                       <MapView
                         {...viewport}
                         initialViewState={INITIAL_VIEW_STATE}
@@ -461,11 +459,13 @@ function App() {
                           height: "100%",
                           width: "1200px",
                         }}
+                        attributionControl={false}
                       >
                         <Marker latitude={lat} longitude={lng}></Marker>
                       </MapView>
+                  
                     </DeckGL>
-                  </View>
+                  </ScrollView>
                 </>
               ),
             },
