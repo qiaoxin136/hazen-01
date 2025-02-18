@@ -16,7 +16,7 @@ import {
   Flex,
   Heading,
   Button,
-  Divider,
+  //Divider,
   Table,
   TableBody,
   TableHead,
@@ -204,33 +204,52 @@ function App() {
     setLat(Object.values(info)[8][1]);
   }, []);
 
+
+
   let layer25 = new GeoJsonLayer({
     id: "datasource",
     data: data,
+    extruded: true,
     filled: true,
-    //pointType: "circle+text",
+    getElevation: 30,
+    getFillColor: (f: any) =>
+      f.properties.software === "infoworksicm"
+        ? [63, 255, 0, 255]
+        : f.properties.software === "infoworkscs"
+        ? [63, 255, 0, 255]
+        : f.properties.software === "pcswmm"
+        ? [220, 20, 60, 255]
+        : f.properties.software === "mike"
+        ? [255, 105, 180, 255]
+        :f.properties.software === "infoswmm"
+        ? [250, 160, 160, 255]
+        :[222, 49, 99, 255],
+    // getIconAngle: 0,
+    // getIconColor: [0, 0, 0, 255],
+    // getIconPixelOffset: [0, 0],
+    // getIconSize: 1,
+    getLineColor: [0, 0, 0, 255],
+    getLineWidth: 1,
+    getPointRadius: 5,
+    // getText: (f: any) => f.properties.Id,
+    getTextAlignmentBaseline: "center",
+    getTextAnchor: "middle",
+
+    getTextSize: 8,
+
+    lineWidthMinPixels: 1,
+    lineWidthScale: 1,
+    lineWidthUnits: "meters",
+
+    pointRadiusMinPixels: 2,
+    pointRadiusScale: 1,
+    pointRadiusUnits: "pixels",
+    pointType: "circle+text",
+    stroked: true,
+
+    autoHighlight: true,
+
     pickable: true,
-    pointType: "icon",
-    iconAtlas:
-      "https://mylibraryforuse.s3.amazonaws.com/logo/icons8-marker-100.png",
-    iconMapping: {
-      marker: {
-        x: 0,
-        y: 0,
-        width: 100,
-        height: 100,
-        anchorY: 50,
-        anchorX: 50,
-        mask: false,
-      },
-    },
-    getIcon: () => "marker",
-    getIconSize: 5,
-    getIconColor: [112, 128, 144, 200],
-    getIconAngle: 0,
-    iconSizeUnits: "meters",
-    iconSizeScale: 5,
-    iconSizeMinPixels: 6,
   });
 
   layers.push(layer25);
@@ -241,7 +260,6 @@ function App() {
         Hydraulic Modeling Group Sewer Software
       </Heading>
       <br />
-      
       <br />
       <br />
       <Flex>
@@ -263,17 +281,16 @@ function App() {
         </Button>
       </Flex>
       <br />
-    
 
       <Flex direction={"column"}>
-        <Flex direction={"row"} width={"100%"}>
+        <Flex direction={"row"} width={"70%"}>
           <Input
             type="text"
             value={name}
             placeholder="Project"
             onChange={handleName}
             size="small"
-             width="50%"
+            width="50%"
           />
           <Input
             type="text"
@@ -281,7 +298,7 @@ function App() {
             placeholder="Customer"
             onChange={handleCustomer}
             size="small"
-             width="50%"
+            width="50%"
           />
           <Input
             type="text"
@@ -289,7 +306,7 @@ function App() {
             placeholder="Location"
             onChange={handleLocation}
             size="small"
-             width="50%"
+            width="50%"
           />
           <Input
             type="date"
@@ -297,7 +314,7 @@ function App() {
             placeholder="Completion"
             onChange={handleYearcompl}
             size="small"
-             width="50%"
+            width="50%"
           />
           <SelectField
             label=""
@@ -325,7 +342,7 @@ function App() {
             placeholder="Mile"
             onChange={handleMile}
             size="small"
-            width="50%"
+            width="20%"
           />
           <Input
             type="number"
@@ -333,15 +350,16 @@ function App() {
             placeholder="PS"
             onChange={handlePs}
             //size="small"
-            width="50%"
+            width="20%"
           />
-          <Input type="number" value={lat} onChange={handleLat} />
-          <Input type="number" value={lng} onChange={handleLng} />
+          <Input type="number" value={lat} onChange={handleLat} width="50%" />
+          <Input type="number" value={lng} onChange={handleLng} width="50%" />
         </Flex>
-        <Divider orientation="horizontal" />
+        {/* <Divider orientation="horizontal" /> */}
         <Tabs
           value={tab}
           onValueChange={(tab) => setTab(tab)}
+          style={{width:"70%"}}
           items={[
             {
               label: "Project Table",
@@ -354,7 +372,7 @@ function App() {
                     backgroundColor="var(--amplify-colors-white)"
                     borderRadius="6px"
                     border="1px solid var(--amplify-colors-black)"
-                     boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
+                    boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
                     color="var(--amplify-colors-blue-60)"
                     // height="45rem"
                     // maxWidth="100%"
@@ -414,11 +432,11 @@ function App() {
               content: (
                 <>
                   <View
-                    // width="100%"
-                    //  width="100%"
-                    //  height={"1600px"}
-                    //  maxHeight={"1600px"}
-                    //  maxWidth="1600px"
+                  // width="100%"
+                  //  width="100%"
+                  //  height={"1600px"}
+                  //  maxHeight={"1600px"}
+                  //  maxWidth="1600px"
                   >
                     <DeckGL
                       initialViewState={INITIAL_VIEW_STATE}
@@ -430,7 +448,7 @@ function App() {
                       }
                       style={{
                         height: "100%",
-                        width: "1600px",
+                        width: "1200px",
                         top: "30%",
                       }}
                     >
@@ -441,7 +459,7 @@ function App() {
                           position: "absolute",
                           zIndex: -1,
                           height: "100%",
-                          width: "1600px",
+                          width: "1200px",
                         }}
                       >
                         <Marker latitude={lat} longitude={lng}></Marker>
