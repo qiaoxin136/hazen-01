@@ -12,7 +12,7 @@ import "@aws-amplify/ui-react/styles.css";
 
 import {
   ScrollView,
-  //View,
+  View,
   Flex,
   Button,
   //Divider,
@@ -356,7 +356,7 @@ function App() {
         <Tabs
           value={tab}
           onValueChange={(tab) => setTab(tab)}
-          style={{width:"70%"}}
+          // style={{width:"100%"}}
           items={[
             {
               label: "Project Table",
@@ -428,7 +428,7 @@ function App() {
               value: "2",
               content: (
                 <>
-                  <ScrollView
+                  <View
                     // as="div"
                     // ariaLabel="View example"
                     // backgroundColor="var(--amplify-colors-white)"
@@ -450,30 +450,24 @@ function App() {
                       }
                       style={{
                         // height: "100%",
-                        // width: "100%",
+                        //  width: "100%",
                         top: "35%",
-                         left: "50px", 
+                        //  left: "50px", 
                       }}
                     >
-                      
                       <MapView
                         {...viewport}
-                        initialViewState={INITIAL_VIEW_STATE}
+                        //initialViewState={INITIAL_VIEW_STATE}
                         style={{
-                          // position: "absolute",
                           zIndex: -1,
-                          // height: "100%",
-                          // width: "100%",
-                          // left: "30%", 
                         }}
-                        attributionControl={false}
-                        
+                        //attributionControl={false}
                       >
                         <Marker latitude={lat} longitude={lng}></Marker>
                       </MapView>
                   
                     </DeckGL>
-                  </ScrollView>
+                  </View>
                 </>
               ),
             },
