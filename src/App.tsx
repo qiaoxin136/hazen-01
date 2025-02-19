@@ -429,11 +429,16 @@ function App() {
               content: (
                 <>
                   <ScrollView
-                  // width="100%"
-                  //  width="100%"
-                  //  height={"1600px"}
-                  //  maxHeight={"1600px"}
-                  //  maxWidth="1600px"
+                    // as="div"
+                    // ariaLabel="View example"
+                    // backgroundColor="var(--amplify-colors-white)"
+                    // borderRadius="6px"
+                    // border="1px solid var(--amplify-colors-black)"
+                    // boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
+                    // color="var(--amplify-colors-blue-60)"
+                    // // height="45rem"
+                    // // maxWidth="100%"
+                    // padding="1rem"
                   >
                     <DeckGL
                       initialViewState={INITIAL_VIEW_STATE}
@@ -444,9 +449,10 @@ function App() {
                         setViewport(viewState)
                       }
                       style={{
-                        height: "100%",
-                        width: "1200px",
-                        top: "30%",
+                        // height: "100%",
+                        // width: "100%",
+                        top: "35%",
+                         left: "50px", 
                       }}
                     >
                       
@@ -454,12 +460,14 @@ function App() {
                         {...viewport}
                         initialViewState={INITIAL_VIEW_STATE}
                         style={{
-                          position: "absolute",
+                          // position: "absolute",
                           zIndex: -1,
-                          height: "100%",
-                          width: "1200px",
+                          // height: "100%",
+                          // width: "100%",
+                          // left: "30%", 
                         }}
                         attributionControl={false}
+                        
                       >
                         <Marker latitude={lat} longitude={lng}></Marker>
                       </MapView>
