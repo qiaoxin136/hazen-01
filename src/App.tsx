@@ -1,18 +1,34 @@
-import { useEffect, useState, ChangeEvent, useCallback } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import type { Schema } from "../amplify/data/resource";
-import { DeckGL } from "@deck.gl/react";
-import { PickingInfo } from "@deck.gl/core";
+import {PickingInfo} from "@deck.gl/core/typed";
 //import { MVTLayer } from "@deck.gl/geo-layers";
-import { GeoJsonLayer } from "@deck.gl/layers";
-import { MapView } from "@aws-amplify/ui-react-geo";
+import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed";
+import { GeoJsonLayer } from "@deck.gl/layers/typed";
+//import { MapView } from "@aws-amplify/ui-react-geo";
 import { generateClient } from "aws-amplify/data";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import "./styles.css";
 import "@aws-amplify/ui-react/styles.css";
+ // "deck.gl": "8.8.20",
+
+ import "@aws-amplify/ui-react/styles.css";
+
+import "maplibre-gl/dist/maplibre-gl.css"; // Import maplibre-gl styles
+import {
+  Map,
+  useControl,
+  Popup,
+  Marker,
+  NavigationControl,
+} from "react-map-gl";
+
+import maplibregl from "maplibre-gl";
+
+import "mapbox-gl/dist/mapbox-gl.css";
 
 import {
   ScrollView,
-  View,
+  //View,
   Flex,
   Button,
   //Divider,
@@ -28,21 +44,22 @@ import {
   Tabs,
 } from "@aws-amplify/ui-react";
 
-import { Marker } from "react-map-gl";
 
-import axios, { AxiosResponse } from "axios";
-import type { Feature, Geometry } from "geojson";
+// import type { Feature, Geometry } from "geojson";
 
-type BlockProperties = {
-  person: string;
-  description: string;
-  date: string;
-  report: string;
-};
+// type BlockProperties = {
+//   person: string;
+//   description: string;
+//   date: string;
+//   report: string;
+// };
 
-export type DataType = Feature<Geometry, BlockProperties>;
+// export type DataType = Feature<Geometry, BlockProperties>;
 
 const client = generateClient<Schema>();
+
+
+
 
 const theme: Theme = {
   name: "table-theme",
@@ -73,20 +90,60 @@ const theme: Theme = {
   },
 };
 
-const INITIAL_VIEW_STATE: any = {
-  //longitude: 139.7674681227469,
-  longitude: -96.20321,
-  //latitude: 35.68111419325676,
-  latitude: 37.00068,
-  zoom: 4,
-  bearing: 0,
-  pitch: 0,
+// const INITIAL_VIEW_STATE: any = {
+//   //longitude: 139.7674681227469,
+//   longitude: -96.20321,
+//   //latitude: 35.68111419325676,
+//   latitude: 37.00068,
+//   zoom: 4,
+//   bearing: 0,
+//   pitch: 0,
+// };
+
+type DataT = {
+  type: "Feature";
+  id: number;
+  geometry: {
+    type: "Point";
+    coordinates: [number, number, number];
+  };
+  properties: {
+    name: string;
+    customer: string;
+    description: string;
+    yearcompl: string;
+    location: string;
+    software: string;
+    lat: number;
+    lng: number;
+    mile: number;
+    recent: string;
+    ps: number;
+    id: string;
+  };
 };
+
+const AIR_PORTS =
+  "https://b7yekehed7.execute-api.us-east-1.amazonaws.com/test/getData";
+
+const MAP_STYLE =
+  "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
+
+function DeckGLOverlay(
+  props: MapboxOverlayProps & {
+    interleaved?: boolean;
+  }
+) {
+  const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
+  // @ts-ignore
+  overlay && overlay.setProps(props);
+  return null;
+}
 
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const { signOut } = useAuthenticator();
-  const [viewport, setViewport] = useState(INITIAL_VIEW_STATE);
+  //const [viewport, setViewport] = useState(INITIAL_VIEW_STATE);
   const [name, setName] = useState("");
   const [customer, setCustomer] = useState("");
   const [lat, setLat] = useState(39.5);
@@ -97,37 +154,14 @@ function App() {
   const [ps, setPs] = useState(0);
   const [software, setSoftware] = useState("");
   const [recent, setRecent] = useState(true);
-  const [data, setData] = useState<DataType>();
+
   const [tab, setTab] = useState("1");
+
+  const [clickInfo, setClickInfo] = useState<DataT>();
+  const [showPopup, setShowPopup] = useState<boolean>(true);
+  
+  
   const layers: any = [];
-
-  const getPlacesData = async () => {
-    try {
-      const url =
-        "https://b7yekehed7.execute-api.us-east-1.amazonaws.com/test/getData";
-      const response: AxiosResponse = await axios.get(url);
-      //console.log(response.data);
-
-      return response.data;
-
-      return null;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  function handleData() {
-    getPlacesData().then((array) => {
-      setData(array);
-      console.log(data);
-    });
-
-    //console.log(data);
-  }
-
-  useEffect(() => {
-    handleData();
-  }, []);
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -198,16 +232,59 @@ function App() {
   const openInNewTab = (url: any) => {
     window.open(url, "_blank", "noreferrer");
   };
-  const onClick = useCallback((info: PickingInfo) => {
-    setLng(Object.values(info)[8][0]);
-    setLat(Object.values(info)[8][1]);
-  }, []);
 
+  function getTooltip(info: PickingInfo) {
+    const d = info.object as DataT;
+    if (d) {
+      //console.log(d);
+      return {
+        html: `<div>${d.properties.name}</div>
+        
+        <div>${d.properties.customer}</div>`,
+        style: {
+          backgroundColor: "#AFE1AF",
+          color: "#000",
+          padding: "5px",
+          borderRadius: "3px",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+        },
+      };
+    }
+    return null;
+  }
+
+  function onClick(info: PickingInfo) {
+    //const safeInfo=info|| [];
+    const f = info.coordinate as [number, number];
+    setLng (f[0]);
+    setLat(f[1]);
+
+    const d = info.object as DataT;
+    if (d) {
+      setClickInfo(d);
+      console.log(clickInfo);
+      console.log(showPopup);
+      return {
+        html: `<div>${d.properties.name}</div>
+        
+        <div>${d.properties.customer}</div>`,
+        style: {
+          backgroundColor: "#AFE1AF",
+          color: "#000",
+          padding: "5px",
+          borderRadius: "3px",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+        },
+      };
+    }
+
+    return null;
+  }
 
 
   let layer25 = new GeoJsonLayer({
     id: "datasource",
-    data: data,
+    data: AIR_PORTS,
     extruded: true,
     filled: true,
     getElevation: 30,
@@ -360,7 +437,7 @@ function App() {
           items={[
             {
               label: "Project Table",
-              value: "1",
+              value: "2",
               content: (
                 <>
                   <ScrollView
@@ -371,14 +448,9 @@ function App() {
                     border="1px solid var(--amplify-colors-black)"
                     boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
                     color="var(--amplify-colors-blue-60)"
-                    // height="45rem"
-                    // maxWidth="100%"
+           
                     padding="1rem"
-                    // width="100%"
-                    // width="2400px"
-                    // height={"2400px"}
-                    // maxHeight={"2400px"}
-                    // maxWidth="2400px"
+    
                   >
                     <ThemeProvider theme={theme} colorMode="light">
                       <Table
@@ -425,49 +497,44 @@ function App() {
             },
             {
               label: "Project Map",
-              value: "2",
+              value: "1",
               content: (
                 <>
-                  <View
-                    // as="div"
-                    // ariaLabel="View example"
-                    // backgroundColor="var(--amplify-colors-white)"
-                    // borderRadius="6px"
-                    // border="1px solid var(--amplify-colors-black)"
-                    // boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
-                    // color="var(--amplify-colors-blue-60)"
-                    // // height="45rem"
-                    // // maxWidth="100%"
-                    // padding="1rem"
-                  >
-                    <DeckGL
-                      initialViewState={INITIAL_VIEW_STATE}
-                      controller
-                      layers={layers}
-                      onClick={onClick}
-                      onViewStateChange={({ viewState }) =>
-                        setViewport(viewState)
-                      }
-                      style={{
-                        // height: "100%",
-                        //  width: "100%",
-                        top: "35%",
-                        //  left: "50px", 
-                      }}
-                    >
-                      <MapView
-                        {...viewport}
-                        //initialViewState={INITIAL_VIEW_STATE}
-                        style={{
-                          zIndex: -1,
-                        }}
-                        //attributionControl={false}
-                      >
-                        <Marker latitude={lat} longitude={lng}></Marker>
-                      </MapView>
                   
-                    </DeckGL>
-                  </View>
+                  <Map
+                  initialViewState={{
+                    longitude: -96.20321,
+                    latitude: 37.00068,
+                    zoom: 4,
+                  }}
+                  mapLib={maplibregl}
+                  mapStyle={MAP_STYLE} // Use any MapLibre-compatible style
+                  style={{
+                    width: "100%",
+                    height: "800px",
+                    borderColor: "#000000",
+                  }}
+                >
+                  <DeckGLOverlay
+                    layers={layers}
+                    getTooltip={getTooltip}
+                    onClick={onClick}
+                  />
+                  <Marker latitude={lat} longitude={lng} />
+                  {clickInfo && (
+                    <Popup
+                    key={`${clickInfo.geometry.coordinates[0]}-${clickInfo.geometry.coordinates[1]}`}
+                    latitude={clickInfo.geometry.coordinates[1]}
+                    longitude={clickInfo.geometry.coordinates[0]}
+                    anchor="bottom"
+                    onClose={() => setShowPopup(false)}
+                  >
+                    {clickInfo.properties.name} <br />
+                    <Button onClick={() => deleteTodo(clickInfo.properties.id)}>Delete </Button>
+                  </Popup>
+                  )}
+                  <NavigationControl position="top-left" />
+                </Map>
                 </>
               ),
             },
