@@ -1,6 +1,6 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import type { Schema } from "../amplify/data/resource";
-import {PickingInfo} from "@deck.gl/core/typed";
+import { PickingInfo } from "@deck.gl/core/typed";
 //import { MVTLayer } from "@deck.gl/geo-layers";
 import { MapboxOverlay, MapboxOverlayProps } from "@deck.gl/mapbox/typed";
 import { GeoJsonLayer } from "@deck.gl/layers/typed";
@@ -9,9 +9,9 @@ import { generateClient } from "aws-amplify/data";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import "./styles.css";
 import "@aws-amplify/ui-react/styles.css";
- // "deck.gl": "8.8.20",
+// "deck.gl": "8.8.20",
 
- import "@aws-amplify/ui-react/styles.css";
+import "@aws-amplify/ui-react/styles.css";
 
 import "maplibre-gl/dist/maplibre-gl.css"; // Import maplibre-gl styles
 import {
@@ -44,7 +44,6 @@ import {
   Tabs,
 } from "@aws-amplify/ui-react";
 
-
 // import type { Feature, Geometry } from "geojson";
 
 // type BlockProperties = {
@@ -57,9 +56,6 @@ import {
 // export type DataType = Feature<Geometry, BlockProperties>;
 
 const client = generateClient<Schema>();
-
-
-
 
 const theme: Theme = {
   name: "table-theme",
@@ -159,8 +155,7 @@ function App() {
 
   const [clickInfo, setClickInfo] = useState<DataT>();
   const [showPopup, setShowPopup] = useState<boolean>(true);
-  
-  
+
   const layers: any = [];
 
   useEffect(() => {
@@ -238,15 +233,17 @@ function App() {
     if (d) {
       //console.log(d);
       return {
-        html: `<div>${d.properties.name}</div>
-        
-        <div>${d.properties.customer}</div>`,
+        html: `<div> Project Name: ${d.properties.name}</div>
+        <div>Customer: ${d.properties.customer}</div>
+        <div>Location: ${d.properties.location}</div>
+        <div>Software: ${d.properties.software}</div>
+        `,
         style: {
-          backgroundColor: "#AFE1AF",
-          color: "#000",
-          padding: "5px",
-          borderRadius: "3px",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+          backgroundColor: "#90EE90",
+          color: "#FF69B4",
+          fontSize: "9px",
+          fontWeight: "bold",
+          width: "250px",
         },
       };
     }
@@ -256,7 +253,7 @@ function App() {
   function onClick(info: PickingInfo) {
     //const safeInfo=info|| [];
     const f = info.coordinate as [number, number];
-    setLng (f[0]);
+    setLng(f[0]);
     setLat(f[1]);
 
     const d = info.object as DataT;
@@ -281,7 +278,6 @@ function App() {
     return null;
   }
 
-
   let layer25 = new GeoJsonLayer({
     id: "datasource",
     data: AIR_PORTS,
@@ -297,9 +293,9 @@ function App() {
         ? [220, 20, 60, 255]
         : f.properties.software === "mike"
         ? [255, 105, 180, 255]
-        :f.properties.software === "infoswmm"
+        : f.properties.software === "infoswmm"
         ? [250, 160, 160, 255]
-        :[222, 49, 99, 255],
+        : [222, 49, 99, 255],
     // getIconAngle: 0,
     // getIconColor: [0, 0, 0, 255],
     // getIconPixelOffset: [0, 0],
@@ -448,9 +444,7 @@ function App() {
                     border="1px solid var(--amplify-colors-black)"
                     boxShadow="3px 3px 5px 6px var(--amplify-colors-neutral-60)"
                     color="var(--amplify-colors-blue-60)"
-           
                     padding="1rem"
-    
                   >
                     <ThemeProvider theme={theme} colorMode="light">
                       <Table
@@ -500,41 +494,48 @@ function App() {
               value: "1",
               content: (
                 <>
-                  
                   <Map
-                  initialViewState={{
-                    longitude: -96.20321,
-                    latitude: 37.00068,
-                    zoom: 4,
-                  }}
-                  mapLib={maplibregl}
-                  mapStyle={MAP_STYLE} // Use any MapLibre-compatible style
-                  style={{
-                    width: "100%",
-                    height: "800px",
-                    borderColor: "#000000",
-                  }}
-                >
-                  <DeckGLOverlay
-                    layers={layers}
-                    getTooltip={getTooltip}
-                    onClick={onClick}
-                  />
-                  <Marker latitude={lat} longitude={lng} />
-                  {clickInfo && (
-                    <Popup
-                    key={`${clickInfo.geometry.coordinates[0]}-${clickInfo.geometry.coordinates[1]}`}
-                    latitude={clickInfo.geometry.coordinates[1]}
-                    longitude={clickInfo.geometry.coordinates[0]}
-                    anchor="bottom"
-                    onClose={() => setShowPopup(false)}
+                    initialViewState={{
+                      longitude: -96.20321,
+                      latitude: 37.00068,
+                      zoom: 4,
+                    }}
+                    mapLib={maplibregl}
+                    mapStyle={MAP_STYLE} // Use any MapLibre-compatible style
+                    style={{
+                      width: "100%",
+                      height: "800px",
+                      borderColor: "#000000",
+                    }}
                   >
-                    {clickInfo.properties.name} <br />
-                    <Button onClick={() => deleteTodo(clickInfo.properties.id)}>Delete </Button>
-                  </Popup>
-                  )}
-                  <NavigationControl position="top-left" />
-                </Map>
+                    <DeckGLOverlay
+                      layers={layers}
+                      getTooltip={getTooltip}
+                      onClick={onClick}
+                    />
+                    <Marker latitude={lat} longitude={lng} />
+                    {clickInfo && (
+                      <Popup
+                        key={`${clickInfo.geometry.coordinates[0]}-${clickInfo.geometry.coordinates[1]}`}
+                        latitude={clickInfo.geometry.coordinates[1]}
+                        longitude={clickInfo.geometry.coordinates[0]}
+                        anchor="bottom"
+                        onClose={() => setShowPopup(false)}
+                      >
+                        {clickInfo.properties.name} <br />
+                        <br />
+                        <Button
+                          size="small"
+                          variation="primary"
+                          colorTheme="error"
+                          onClick={() => deleteTodo(clickInfo.properties.id)}
+                        >
+                          Delete{" "}
+                        </Button>
+                      </Popup>
+                    )}
+                    <NavigationControl position="top-left" />
+                  </Map>
                 </>
               ),
             },
