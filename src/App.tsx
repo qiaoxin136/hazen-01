@@ -1,4 +1,4 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import  { useEffect, useState, ChangeEvent, } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { PickingInfo } from "@deck.gl/core/typed";
 //import { MVTLayer } from "@deck.gl/geo-layers";
@@ -25,6 +25,8 @@ import {
 import maplibregl from "maplibre-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
+
+
 
 import {
   ScrollView,
@@ -156,6 +158,14 @@ function App() {
   const [clickInfo, setClickInfo] = useState<DataT>();
   const [showPopup, setShowPopup] = useState<boolean>(true);
 
+
+  
+  //const [, forceUpdate] = useReducer(x => x + 1, 0);//force update the render
+
+  
+
+  
+
   const layers: any = [];
 
   useEffect(() => {
@@ -163,6 +173,8 @@ function App() {
       next: (data) => setTodos([...data.items]),
     });
   }, []);
+
+  
 
   function createTodo() {
     //const today = new Date();
@@ -187,10 +199,12 @@ function App() {
     setCustomer("");
     setLocation("");
     setYearcoml("");
+   
   }
 
   function deleteTodo(id: string) {
     client.models.Todo.delete({ id });
+   
   }
 
   const handleName = (e: ChangeEvent<HTMLInputElement>) => {
